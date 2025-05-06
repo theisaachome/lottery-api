@@ -29,7 +29,7 @@ public class Ticket extends BaseEntity{
     @Column(nullable = false)
     private BigDecimal totalAmount;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private BigDecimal commission;
 
     private String qrCodeUrl;
