@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -32,4 +33,7 @@ public class Ticket extends BaseEntity{
     private BigDecimal commission;
 
     private String qrCodeUrl;
+
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TicketNumber> ticketNumbers;
 }
