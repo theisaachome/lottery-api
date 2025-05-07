@@ -1,15 +1,14 @@
 package com.highway.lottery.domain.mapper;
-
 import com.highway.lottery.domain.IModelMapper;
 import com.highway.lottery.domain.dto.TicketNumberDTO;
 import com.highway.lottery.domain.dto.TicketRequestDto;
 import com.highway.lottery.domain.dto.TicketResponseDTO;
 import com.highway.lottery.domain.entity.Ticket;
 import org.springframework.stereotype.Component;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
+
 
 @Component
 public class TicketMapper implements IModelMapper<TicketRequestDto, TicketResponseDTO, Ticket> {
@@ -41,7 +40,7 @@ public class TicketMapper implements IModelMapper<TicketRequestDto, TicketRespon
                 ticket.getDrawDate(),
                 ticket.getDrawType(),
                 ticket.getTotalAmount(),
-                ticket.getCommission(),
+//                ticket.getCommission(),
                 ticket.getQrCodeUrl(),
                 ticket.getCreatedAt(),
                 ticketNumbers);

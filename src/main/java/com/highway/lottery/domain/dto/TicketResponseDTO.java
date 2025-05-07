@@ -21,7 +21,7 @@ public class TicketResponseDTO {
     private LocalDate drawDate;
     private String drawType;
     private BigDecimal totalAmount;
-    private BigDecimal commission;
+//    private BigDecimal commission;
     private String qrCodeUrl;
     private LocalDateTime createdAt;
     private List<TicketNumberDTO> numbers;
