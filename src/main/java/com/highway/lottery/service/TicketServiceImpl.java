@@ -1,5 +1,5 @@
 package com.highway.lottery.service;
-import com.highway.lottery.domain.dto.TicketRequestDto;
+import com.highway.lottery.domain.dto.TicketRequestDTO;
 import com.highway.lottery.domain.dto.TicketResponseDTO;
 import com.highway.lottery.domain.entity.Commission;
 import com.highway.lottery.domain.entity.TicketNumber;
@@ -25,7 +25,7 @@ public class TicketServiceImpl implements TicketService{
     }
 
     @Override
-    public TicketResponseDTO createTicket(TicketRequestDto dto) {
+    public TicketResponseDTO createTicket(TicketRequestDTO dto) {
         // get entity
         var entity = ticketMapper.toEntity(dto);
         var ticketNumbers =

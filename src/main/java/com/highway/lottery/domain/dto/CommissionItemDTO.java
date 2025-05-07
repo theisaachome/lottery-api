@@ -3,15 +3,15 @@ package com.highway.lottery.domain.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
 @Getter
 @Setter
-public class TicketRequestDto {
+public class CommissionItemDTO {
+    private Long ticketId;
     private String customerName;
-    private String phone;
     private LocalDate drawDate;
-    private String drawType;
-    private List<TicketNumberDTO> numbers;
+    private BigDecimal ticketAmount;
+    private BigDecimal commissionEarned;
 }

@@ -21,6 +21,8 @@ public class CommissionWithdrawal extends BaseEntity{
     @Column(nullable = false)
     private BigDecimal totalAmount;
 
+    @Enumerated(EnumType.STRING)
+    private WithdrawalStatus withdrawalStatus;
     // one to many (one-withdraw has many commissions)
     @OneToMany
     @JoinTable(

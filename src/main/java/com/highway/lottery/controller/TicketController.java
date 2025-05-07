@@ -1,5 +1,5 @@
 package com.highway.lottery.controller;
-import com.highway.lottery.domain.dto.TicketRequestDto;
+import com.highway.lottery.domain.dto.TicketRequestDTO;
 import com.highway.lottery.domain.dto.TicketResponseDTO;
 import com.highway.lottery.service.TicketService;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,7 @@ public class TicketController {
 
     // create lottery-ticket
     @PostMapping
-    public ResponseEntity<TicketResponseDTO> createLotteryTicket(@RequestBody TicketRequestDto dto) {
+    public ResponseEntity<TicketResponseDTO> createLotteryTicket(@RequestBody TicketRequestDTO dto) {
         var result = ticketService.createTicket(dto);
         return new ResponseEntity<>(result,HttpStatus.OK);
     }

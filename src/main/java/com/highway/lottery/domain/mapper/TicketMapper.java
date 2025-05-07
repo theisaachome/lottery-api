@@ -1,7 +1,7 @@
 package com.highway.lottery.domain.mapper;
 import com.highway.lottery.domain.IModelMapper;
 import com.highway.lottery.domain.dto.TicketNumberDTO;
-import com.highway.lottery.domain.dto.TicketRequestDto;
+import com.highway.lottery.domain.dto.TicketRequestDTO;
 import com.highway.lottery.domain.dto.TicketResponseDTO;
 import com.highway.lottery.domain.entity.Ticket;
 import org.springframework.stereotype.Component;
@@ -11,10 +11,10 @@ import java.util.stream.Collectors;
 
 
 @Component
-public class TicketMapper implements IModelMapper<TicketRequestDto, TicketResponseDTO, Ticket> {
+public class TicketMapper implements IModelMapper<TicketRequestDTO, TicketResponseDTO, Ticket> {
 
     @Override
-    public Ticket toEntity(TicketRequestDto data) {
+    public Ticket toEntity(TicketRequestDTO data) {
         Ticket ticket = new Ticket();
         ticket.setCustomerName(data.getCustomerName());
         ticket.setPhone(data.getPhone());
