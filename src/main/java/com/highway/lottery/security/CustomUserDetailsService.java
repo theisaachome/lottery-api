@@ -23,12 +23,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String usernameOrPhone) throws UsernameNotFoundException {
-        var account = accountRepo.findAccountByUsernameAndPhone(usernameOrPhone,usernameOrPhone)
+        var account = accountRepo.findAccountByPhone(usernameOrPhone)
                 .orElseThrow(() -> new UsernameNotFoundException(usernameOrPhone));
         Set<GrantedAuthority> grantedAuthorities =
                 account.getRoles()
                         .stream()
-                        .map((role -> new SimpleGrantedAuthority(role.getName())))
+                        .map((role -> new SimpleGrantedAuthority(role.getRoleName())))
                         .collect(Collectors.toSet());
         return new SecurityUser(account);
     }

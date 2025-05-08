@@ -17,7 +17,7 @@ public class SecurityUser implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.account.getRoles().
                 stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
                 .collect(Collectors.toSet());
     }
 
@@ -28,7 +28,7 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.getUsername();
+        return  account.getUsername();
     }
 
     @Override

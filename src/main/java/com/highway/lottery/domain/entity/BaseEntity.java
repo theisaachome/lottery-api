@@ -21,11 +21,14 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 public abstract  class BaseEntity {
 
+//    @Id
+//    @GeneratedValue(generator = "uuid2")
+//    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+//    @Column(length = 36, updatable = false, nullable = false)
+//    private UUID id;
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(length = 36, updatable = false, nullable = false)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @CreatedDate
     @Column(name = "created_at", updatable = false, nullable = false)

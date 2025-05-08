@@ -15,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class TicketResponseDTO {
-    private UUID id;
+    private Long id;
     private String customerName;
     private String phone;
     private LocalDate drawDate;
