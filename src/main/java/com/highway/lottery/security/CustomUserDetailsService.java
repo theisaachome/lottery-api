@@ -1,5 +1,6 @@
 package com.highway.lottery.security;
 
+import com.highway.lottery.exception.ResourceNotFoundException;
 import com.highway.lottery.repository.AccountRepo;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,8 +24,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String usernameOrPhone) throws UsernameNotFoundException {
-        var account = accountRepo.findAccountByPhone(usernameOrPhone)
-                .orElseThrow(() -> new UsernameNotFoundException(usernameOrPhone));
+        var account = accountRepo.findAccountByUsername(usernameOrPhone)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + usernameOrPhone));
         Set<GrantedAuthority> grantedAuthorities =
                 account.getRoles()
                         .stream()

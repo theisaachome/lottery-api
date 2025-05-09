@@ -1,5 +1,6 @@
 package com.highway.lottery.controller;
 
+import com.highway.lottery.domain.dto.JwtResponse;
 import com.highway.lottery.domain.dto.SignInDTO;
 import com.highway.lottery.domain.dto.SignUpDTO;
 import com.highway.lottery.service.AuthService;
@@ -21,7 +22,7 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<String> signingIn(@RequestBody SignInDTO dto){
+    public ResponseEntity<JwtResponse> signingIn(@RequestBody SignInDTO dto){
         var response = authService.signIn(dto);
         return  new ResponseEntity<>(response, HttpStatus.OK);
     }

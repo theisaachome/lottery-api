@@ -1,4 +1,5 @@
 package com.highway.lottery.service;
+import com.highway.lottery.domain.dto.JwtResponse;
 import com.highway.lottery.domain.dto.SignInDTO;
 import com.highway.lottery.domain.dto.SignUpDTO;
 import com.highway.lottery.domain.entity.Account;
@@ -14,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Service
@@ -33,7 +35,7 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public String signIn(SignInDTO dto) {
+    public JwtResponse signIn(SignInDTO dto) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -42,9 +44,12 @@ public class AuthServiceImpl implements AuthService{
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String token = jwtTokenProvider.generateToken(authentication);
-            return token;
+            var expiresIn = LocalDateTime.now().plusMinutes(7);
+            return new JwtResponse(token,String.format("Expires: %s", expiresIn));
         } catch (Exception e) {
-            return "Login failed: " + e.getMessage(); // Log or return a proper error response
+//            return "Login failed: " + e.getMessage(); // Log or return a proper error response
+            e.printStackTrace();
+            throw  new APIException(HttpStatus.UNAUTHORIZED,e.getMessage());
         }
     }
 
