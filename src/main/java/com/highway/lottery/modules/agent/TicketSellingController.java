@@ -7,6 +7,7 @@ import com.highway.lottery.modules.ticket.dto.TicketRequest;
 import com.highway.lottery.modules.ticket.dto.TicketResponse;
 import com.highway.lottery.modules.ticket.service.TicketService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -48,9 +49,27 @@ public class TicketSellingController {
         var results = ticketService.getTickets();
         return new ResponseEntity<>(results,HttpStatus.OK);
     }
+
+//    @GetMapping(value = "/{ticketCode}/download", produces = MediaType.APPLICATION_PDF_VALUE)
+//    public ResponseEntity<byte[]> downloadTicketPdf(@PathVariable String ticketCode) throws Exception {
+//        String agentCode = "AGENT001"; // Fetch from ticket or logged-in user
+//        byte[] pdf = TicketPdfGenerator.generateTicketPdf(ticketCode, agentCode);
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentDisposition(ContentDisposition.builder("attachment")
+//                .filename("ticket_" + ticketCode + ".pdf")
+//                .build());
+//
+//        return ResponseEntity.ok()
+//                .headers(headers)
+//                .contentType(MediaType.APPLICATION_PDF)
+//                .body(pdf);
+//    }
     private Long getLoggedUser(String username) {
         var user = accountRepo.findAccountByUsername(username)
                 .orElseThrow(()->new UnauthorizedException("Authenticated user is not registered in the system."));
         return user.getId();
     }
+
+
 }
