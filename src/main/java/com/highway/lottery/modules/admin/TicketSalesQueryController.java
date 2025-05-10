@@ -4,8 +4,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/admin/withdrawals")
-public class WithdrawalReviewController {
+@RequestMapping("/api/v1/admin/sales")
+public class TicketSalesQueryController {
 
-    // View all withdrawal requests
+    // # Query all sales
 }

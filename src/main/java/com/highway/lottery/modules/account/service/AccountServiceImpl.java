@@ -29,9 +29,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountResponse createAccount(AccountRequest request) {
         // find User already exist
-        var existingAccount = accountRepo.findAccountByUsernameAndPhone(request.username(),request.phone());
-        if (existingAccount != null) {
-            throw  new APIException(HttpStatus.BAD_REQUEST,"Account already exists");
+        if(accountRepo.existsAccountByPhone(request.phone())){
+            throw  new APIException(HttpStatus.BAD_REQUEST,"Agent Account Already exist with phone number");
         }
         var entity=accountMapper.toEntity(request);
         var roles = roleRepository.findByRoleName(request.role())

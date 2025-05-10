@@ -1,8 +1,9 @@
 package com.highway.lottery.modules.ticket.mapper;
 import com.highway.lottery.common.mapper.IModelMapper;
-import com.highway.lottery.modules.ticket.dto.TicketNumberRequest;
+import com.highway.lottery.modules.ticket.dto.TicketNumberDto;
 import com.highway.lottery.modules.ticket.dto.TicketRequest;
 import com.highway.lottery.modules.ticket.dto.TicketResponse;
+import com.highway.lottery.modules.ticket.dto.SoldTicketResponse;
 import com.highway.lottery.modules.ticket.entity.Ticket;
 import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
@@ -22,27 +23,40 @@ public class TicketMapper implements IModelMapper<TicketRequest, TicketResponse,
         ticket.setDrawType(data.getDrawType());
         var totalAmount = data.getNumbers()
                 .stream()
-                .map(TicketNumberRequest::getAmount)
+                .map(TicketNumberDto::getAmount)
                 .reduce(BigDecimal.ZERO,BigDecimal::add);
         ticket.setTotalAmount(totalAmount);
-
         return ticket;
     }
 
     @Override
     public TicketResponse toResponseDto(Ticket ticket) {
         var ticketNumbers = ticket.getTicketNumbers()
-                .stream().map((data)->new TicketNumberRequest(data.getNumber(), data.getAmount())).collect(Collectors.toList());
+                .stream().map((data)->new TicketNumberDto(data.getNumber(), data.getAmount())).collect(Collectors.toList());
         return new TicketResponse(
                 ticket.getId(),
+                ticket.getTicketCode(),
+                ticket.getAgentCode(),
                 ticket.getCustomerName(),
                 ticket.getPhone(),
                 ticket.getDrawDate(),
                 ticket.getDrawType(),
                 ticket.getTotalAmount(),
-//                ticket.getCommission(),
                 ticket.getQrCodeUrl(),
                 ticket.getCreatedAt(),
+                ticket.getCreatedBy(),
                 ticketNumbers);
+    }
+    public SoldTicketResponse toSoldTicketResponse(Ticket ticket) {
+        var ticketNumbers = ticket.getTicketNumbers()
+                .stream().map((data)->new TicketNumberDto(data.getNumber(), data.getAmount())).toList();
+        return new SoldTicketResponse(
+                ticket.getId(),
+                ticket.getTicketCode(),
+                ticket.getAgentCode(),
+                ticket.getCreatedAt(),
+                ticketNumbers,
+                ticket.getTotalAmount()
+        );
     }
 }

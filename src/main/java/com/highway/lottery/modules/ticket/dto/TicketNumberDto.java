@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TicketNumberRequest {
+public class TicketNumberDto {
     private String number; // e.g. "12"
     private BigDecimal amount;
 }

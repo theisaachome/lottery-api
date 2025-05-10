@@ -1,4 +1,5 @@
 package com.highway.lottery.config.security;
+import com.highway.lottery.common.exception.CustomAccessDeniedHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +20,7 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint  jwtAuthenticationEntryPoint;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+
     public SecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
@@ -34,14 +36,18 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+                                                   CustomAccessDeniedHandler accessDeniedHandler) throws Exception {
         http.csrf((auth)->auth.disable())
                 .authorizeHttpRequests((req)->{
                     req.requestMatchers("/api/v1/auth/**").permitAll();
                     req.requestMatchers("/api/v1/admin/accounts").hasRole("ADMIN");
                     req.anyRequest().authenticated();
                 })
-                .exceptionHandling((exception)->exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                .exceptionHandling((exception)->
+                                exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                                        .accessDeniedHandler(accessDeniedHandler))
                 .sessionManagement((session)->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable);

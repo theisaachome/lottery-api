@@ -1,5 +1,6 @@
 package com.highway.lottery.modules.account.mapper;
 import com.highway.lottery.common.mapper.IModelMapper;
+import com.highway.lottery.common.util.AppCodeGenerator;
 import com.highway.lottery.modules.account.dto.AccountRequest;
 import com.highway.lottery.modules.account.dto.AccountResponse;
 import com.highway.lottery.modules.account.entity.Account;
@@ -23,6 +24,7 @@ public class AccountMapper implements IModelMapper<AccountRequest, AccountRespon
         newAccount.setUsername(data.username());
         newAccount.setPhone(data.phone());
         newAccount.setPassword(passwordEncoder.encode(data.password()));
+        newAccount.setAgentCode(AppCodeGenerator.generateAgentCode());
         return newAccount;
     }
 

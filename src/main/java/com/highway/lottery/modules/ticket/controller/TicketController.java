@@ -8,10 +8,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/v1/tickets")
 public class TicketController {
 
+    /*
     private final TicketService ticketService;
 
     public TicketController(TicketService ticketService) {
@@ -29,4 +28,5 @@ public class TicketController {
         var results = ticketService.getTickets();
         return new ResponseEntity<>(results,HttpStatus.OK);
     }
+    */
 }

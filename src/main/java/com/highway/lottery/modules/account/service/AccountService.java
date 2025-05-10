@@ -10,4 +10,5 @@ public interface AccountService {
     AccountResponse updateAccount(Long accountId,AccountRequest request);
     void deleteAccount(Long accountId);// soft-delete
     List<AccountResponse> getAllAccounts();
+
 }

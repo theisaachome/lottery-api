@@ -18,4 +18,5 @@ public interface AccountRepo extends JpaRepository<Account, Long> {
     @Query("SELECT a FROM Account  a WHERE a.active=true ")
     List<Account> findAccountByActive();
     boolean  existsAccountByPhone(String phone);
+    boolean existsAccountByUsername(String username);
 }

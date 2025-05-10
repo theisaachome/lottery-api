@@ -17,12 +17,12 @@ public class JpaAuditingConfig {
     public AuditorAware<String> auditorProvider() {
         return ()->{
             var authentication = SecurityContextHolder.getContext().getAuthentication();
-            if(authentication == null || !authentication.isAuthenticated()) {
+            if(authentication == null || !authentication.isAuthenticated() ||
+            authentication.getPrincipal().equals("anonymousUser") ){
                 return Optional.of("system");
             }
             return Optional.of(authentication.getName());
 //           return Optional.of("System");
-
         };
     }
 }

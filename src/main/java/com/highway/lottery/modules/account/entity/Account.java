@@ -20,6 +20,9 @@ public class Account extends BaseEntity {
     private String password;
     @Column(nullable = false, unique = true)
     private String phone;
+
+    @Column(nullable = false, unique = true,length = 10)
+    private String agentCode;
     private boolean enabled = true;
     private boolean locked = false;
 

@@ -6,13 +6,10 @@ import com.highway.lottery.modules.account.service.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/v1/admin/accounts")
 public class AdminAccountController {
 
     private final AccountService accountService;
@@ -22,7 +19,7 @@ public class AdminAccountController {
     }
 
     // admin-role => create account for agent
-    @PreAuthorize("hasRole(ADMIN)")
+//    @PreAuthorize("hasRole(ADMIN)")
     @PostMapping
     public ResponseEntity<AccountResponse> createAccount(@Valid @RequestBody AccountRequest dto){
         var newAccount = accountService.createAccount(dto);

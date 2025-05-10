@@ -2,6 +2,7 @@ package com.highway.lottery.modules.security.service;
 import com.highway.lottery.common.dto.JwtResponse;
 import com.highway.lottery.common.dto.SignInDTO;
 import com.highway.lottery.common.dto.SignUpDTO;
+import com.highway.lottery.common.util.AppCodeGenerator;
 import com.highway.lottery.modules.account.entity.Account;
 import com.highway.lottery.common.exception.APIException;
 import com.highway.lottery.modules.account.repo.AccountRepo;
@@ -63,6 +64,7 @@ public class AuthServiceImpl implements AuthService{
         account.setPhone(dto.phone());
         account.setUsername(dto.username());
         account.setPassword(passwordEncoder.encode(dto.password()));
+        account.setAgentCode(AppCodeGenerator.generateAgentCode());
         // setup roles ->
         var roles = roleRepo.findByRoleName("ROLE_ADMIN")
                 .orElseThrow(()-> new APIException(HttpStatus.BAD_REQUEST,"No role found"));

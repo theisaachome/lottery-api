@@ -15,13 +15,15 @@ import java.util.List;
 @Builder
 public class TicketResponse {
     private Long id;
+    private String ticketCode;
+    private String agentCode;
     private String customerName;
     private String phone;
     private LocalDate drawDate;
     private String drawType;
     private BigDecimal totalAmount;
-//    private BigDecimal commission;
     private String qrCodeUrl;
     private LocalDateTime createdAt;
-    private List<TicketNumberRequest> numbers;
+    private String createdBy;
+    private List<TicketNumberDto> numbers;
 }

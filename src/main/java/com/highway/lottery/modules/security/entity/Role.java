@@ -12,7 +12,6 @@ import lombok.*;
 @AllArgsConstructor
 public class Role  extends BaseEntity {
 
-
     private String roleName;
     private String description;
 
