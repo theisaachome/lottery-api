@@ -1,6 +1,6 @@
 package com.highway.lottery.service;
-import com.highway.lottery.domain.dto.CommissionWithdrawalDTO;
-import com.highway.lottery.domain.entity.WithdrawalStatus;
+import com.highway.lottery.common.dto.CommissionWithdrawalDTO;
+import com.highway.lottery.common.enums.WithdrawalStatus;
 import java.util.List;
 
 public interface AdminCommissionWithdrawalService {

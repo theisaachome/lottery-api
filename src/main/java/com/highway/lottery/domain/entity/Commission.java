@@ -1,5 +1,7 @@
 package com.highway.lottery.domain.entity;
 
+import com.highway.lottery.common.dto.BaseEntity;
+import com.highway.lottery.modules.ticket.entity.Ticket;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +15,7 @@ import java.time.LocalDate;
 @Setter
 @Entity
 @Table(name = "commissions")
-public class Commission extends BaseEntity{
+public class Commission extends BaseEntity {
 
 
 //    @ManyToOne(fetch = FetchType.LAZY)

@@ -1,4 +1,6 @@
 package com.highway.lottery.domain.entity;
+import com.highway.lottery.common.dto.BaseEntity;
+import com.highway.lottery.common.enums.WithdrawalStatus;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -6,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "commission_withdrawals")
-public class CommissionWithdrawal extends BaseEntity{
+public class CommissionWithdrawal extends BaseEntity {
 
 //    @ManyToOne
 //    @JoinColumn(name = "agent_id", nullable = false)
