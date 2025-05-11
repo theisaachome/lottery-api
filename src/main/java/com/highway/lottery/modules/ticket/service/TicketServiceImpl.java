@@ -1,4 +1,5 @@
 package com.highway.lottery.modules.ticket.service;
+import com.highway.lottery.common.exception.ResourceNotFoundException;
 import com.highway.lottery.common.exception.UnauthorizedException;
 import com.highway.lottery.common.util.AppCodeGenerator;
 import com.highway.lottery.modules.account.repo.AccountRepo;
@@ -75,6 +76,13 @@ public class TicketServiceImpl implements TicketService {
                 .stream()
                 .map(ticketMapper::toResponseDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public TicketResponse getTicketByTicketCode(String ticketCode) {
+        var soldTicket = ticketRepository.findTicketByTicketCode(ticketCode)
+                .orElseThrow(()->new ResourceNotFoundException("No sold ticket found with ticket-code : " +ticketCode));
+        return ticketMapper.toResponseDto(soldTicket);
     }
 
     @Override

@@ -25,5 +25,5 @@ public class TicketResponse {
     private String qrCodeUrl;
     private LocalDateTime createdAt;
     private String createdBy;
-    private List<TicketNumberDto> numbers;
+    private List<TicketNumberDto> ticketNumbers;
 }

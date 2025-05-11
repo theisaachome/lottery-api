@@ -2,6 +2,8 @@ package com.highway.lottery.common.util;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import org.springframework.stereotype.Service;
@@ -14,10 +16,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@Service
 public class QrCodeGeneratorService {
 
-    public byte[] generateQrCodeImage(String content, int width, int height) throws IOException {
+    public static BufferedImage generateQRCodeImage(String text, int width, int height) throws WriterException {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
+        return MatrixToImageWriter.toBufferedImage(bitMatrix);
+    }
+    public static byte[] generateQrCodeImage(String content, int width, int height) throws IOException {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         Map<EncodeHintType, Object> hintsMap = new HashMap<>();
         hintsMap.put(EncodeHintType.CHARACTER_SET, "UTF-8");
@@ -39,7 +45,7 @@ public class QrCodeGeneratorService {
         return outputStream.toByteArray();
     }
 
-    private BufferedImage toBufferedImage(BitMatrix matrix) {
+    private static BufferedImage toBufferedImage(BitMatrix matrix) {
         int width = matrix.getWidth();
         int height = matrix.getHeight();
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);

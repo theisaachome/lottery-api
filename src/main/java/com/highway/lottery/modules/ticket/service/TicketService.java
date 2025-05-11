@@ -13,4 +13,5 @@ public interface TicketService {
 
     List<TicketResponse> getTicketsByAgentId(Long agentId);
     List<SoldTicketResponse> getSoldTicketByAgentId(Long agentId);
+   TicketResponse getTicketByTicketCode(String ticketCode);
 }

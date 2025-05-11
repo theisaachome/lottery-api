@@ -1,14 +1,13 @@
 package com.highway.lottery.modules.agent;
 
 import com.highway.lottery.common.exception.UnauthorizedException;
+import com.highway.lottery.common.util.TicketPdfGenerator;
 import com.highway.lottery.modules.account.repo.AccountRepo;
 import com.highway.lottery.modules.ticket.dto.SoldTicketResponse;
 import com.highway.lottery.modules.ticket.dto.TicketRequest;
 import com.highway.lottery.modules.ticket.dto.TicketResponse;
 import com.highway.lottery.modules.ticket.service.TicketService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,14 +15,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/agent/tickets")
-//@PreAuthorize("hasRole('AGENT')")
 public class TicketSellingController {
     private final TicketService ticketService;
     private final AccountRepo accountRepo;
+    private final TicketPdfGenerator ticketPdfGenerator;
 
-    public TicketSellingController(TicketService ticketService, AccountRepo accountRepo) {
+    public TicketSellingController(TicketService ticketService, AccountRepo accountRepo, TicketPdfGenerator ticketPdfGenerator) {
         this.ticketService = ticketService;
         this.accountRepo = accountRepo;
+        this.ticketPdfGenerator = ticketPdfGenerator;
     }
 
     // create lottery-ticket
@@ -32,6 +32,18 @@ public class TicketSellingController {
         var result = ticketService.createTicket(dto,authentication.getName());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+    @GetMapping("/{ticketCode}/preview")
+    public ResponseEntity<byte[]> previewTicket(@PathVariable("ticketCode")String ticketCode){
+        byte[] pdfBytes = ticketPdfGenerator.generateTicketPdf(ticketService.getTicketByTicketCode(ticketCode));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.inline().filename("ticket_invoice.pdf").build());
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdfBytes);
+    }
+     // /tickets/verify
+
     // get All sold ticket
 //    @GetMapping
 //    public ResponseEntity<List<TicketResponse>> getAllTicketSales(Authentication authentication){
