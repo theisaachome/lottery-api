@@ -1,5 +1,6 @@
 package com.highway.lottery.modules.ticket.service;
 import com.highway.lottery.common.dto.APIListResponse;
+import com.highway.lottery.common.dto.APISingleResponse;
 import com.highway.lottery.common.exception.APIException;
 import com.highway.lottery.common.exception.ResourceNotFoundException;
 import com.highway.lottery.common.exception.UnauthorizedException;
@@ -93,11 +94,19 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public TicketResponse getTicketByTicketCode(String ticketCode) {
+    public APISingleResponse<TicketResponse> getTicketByTicketCode(String ticketCode) {
         var soldTicket = ticketRepository.findTicketByTicketCode(ticketCode)
                 .orElseThrow(()->new ResourceNotFoundException("No sold ticket found with ticket-code : " +ticketCode));
-        return ticketMapper.toResponseDto(soldTicket);
+        return  new APISingleResponse<>(true,ticketMapper.toResponseDto(soldTicket),"Subject retrvie successfully");
     }
+
+    @Override
+    public TicketResponse getTicketDetailsForPdf(String ticketCode) {
+        var soldTicket = ticketRepository.findTicketByTicketCode(ticketCode)
+                .orElseThrow(()->new ResourceNotFoundException("No sold ticket found with ticket-code : " +ticketCode));
+        return  ticketMapper.toResponseDto(soldTicket);
+    }
+
 
     @Override
     public boolean verifyTicket(String signature, String payload) {
