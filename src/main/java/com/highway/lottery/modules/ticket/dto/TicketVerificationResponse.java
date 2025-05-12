@@ -10,5 +10,5 @@ public record TicketVerificationResponse(
         LocalDateTime soldAt,
         Double totalAmount,
         List<TicketNumberDto> ticketNumbers
-) {
+) implements TicketVerificationResult{
 }

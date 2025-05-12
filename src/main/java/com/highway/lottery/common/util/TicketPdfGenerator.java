@@ -1,5 +1,6 @@
 package com.highway.lottery.common.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.highway.lottery.modules.ticket.dto.TicketNumberDto;
 import com.highway.lottery.modules.ticket.dto.TicketResponse;
 import com.lowagie.text.Document;
@@ -14,9 +15,11 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 @Configuration
 public class TicketPdfGenerator {
+
 
     public byte[] generateTicketPdf(TicketResponse ticket) {
         try(ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
@@ -52,7 +55,7 @@ public class TicketPdfGenerator {
             document.add(new Paragraph("Total Amount: " + ticket.getTotalAmount() + " MMK"));
 
             // 🔐 Embed QR Code
-            String qrContent = "Ticket_Code"+ ticket.getTicketCode();
+            String qrContent =TicketUtils.generateSignedQRPayload(ticket);
             BufferedImage bufferedQR =QrCodeGeneratorService.generateQRCodeImage(qrContent,200,200);
             ByteArrayOutputStream qrBaos = new ByteArrayOutputStream();
             ImageIO.write(bufferedQR, "png", qrBaos);
@@ -68,4 +71,5 @@ public class TicketPdfGenerator {
 
         }
     }
+
 }

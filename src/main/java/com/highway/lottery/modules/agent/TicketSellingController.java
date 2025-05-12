@@ -6,11 +6,11 @@ import com.highway.lottery.modules.account.repo.AccountRepo;
 import com.highway.lottery.modules.ticket.dto.SoldTicketResponse;
 import com.highway.lottery.modules.ticket.dto.TicketRequest;
 import com.highway.lottery.modules.ticket.dto.TicketResponse;
+import com.highway.lottery.modules.ticket.dto.TicketVerificationResult;
 import com.highway.lottery.modules.ticket.service.TicketService;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -43,7 +43,10 @@ public class TicketSellingController {
                 .body(pdfBytes);
     }
      // /tickets/verify
-
+//    @PostMapping
+    public ResponseEntity<TicketVerificationResult> verifyTicket(@PathVariable("ticketCode")String ticketCode){
+        return null;
+    }
     // get All sold ticket
 //    @GetMapping
 //    public ResponseEntity<List<TicketResponse>> getAllTicketSales(Authentication authentication){
