@@ -1,7 +1,9 @@
 package com.highway.lottery.modules.ticket.service;
+import com.highway.lottery.common.exception.APIException;
 import com.highway.lottery.common.exception.ResourceNotFoundException;
 import com.highway.lottery.common.exception.UnauthorizedException;
 import com.highway.lottery.common.util.AppCodeGenerator;
+import com.highway.lottery.common.util.TicketUtils;
 import com.highway.lottery.modules.account.repo.AccountRepo;
 import com.highway.lottery.modules.ticket.dto.TicketRequest;
 import com.highway.lottery.modules.ticket.dto.TicketResponse;
@@ -11,6 +13,8 @@ import com.highway.lottery.modules.ticket.entity.TicketNumber;
 import com.highway.lottery.modules.ticket.mapper.TicketMapper;
 import com.highway.lottery.modules.commission.repo.CommissionRepository;
 import com.highway.lottery.modules.ticket.repo.TicketRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,6 +23,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class TicketServiceImpl implements TicketService {
+
+    @Autowired
+    private TicketUtils ticketUtils;
     private final AccountRepo accountRepo;
     private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
@@ -83,6 +90,19 @@ public class TicketServiceImpl implements TicketService {
         var soldTicket = ticketRepository.findTicketByTicketCode(ticketCode)
                 .orElseThrow(()->new ResourceNotFoundException("No sold ticket found with ticket-code : " +ticketCode));
         return ticketMapper.toResponseDto(soldTicket);
+    }
+
+    @Override
+    public boolean verifyTicket(String signature, String payload) {
+        // Step 4: Check ticket existence
+//        var payload = request.getPayload();
+//        boolean exists = ticketRepository.existsByIdAndTicketCode(payload.getTicketId(), payload.getTicketCode());
+
+        try {
+            return ticketUtils.verifyTicket(signature,payload);
+        }catch (Exception e){
+            throw new APIException(HttpStatus.BAD_REQUEST,e.getMessage());
+        }
     }
 
     @Override

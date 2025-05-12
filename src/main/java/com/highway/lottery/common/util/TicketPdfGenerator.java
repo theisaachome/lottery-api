@@ -9,6 +9,7 @@ import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 import javax.imageio.ImageIO;
@@ -20,6 +21,8 @@ import java.util.Map;
 @Configuration
 public class TicketPdfGenerator {
 
+    @Autowired
+    private TicketUtils ticketUtils;
 
     public byte[] generateTicketPdf(TicketResponse ticket) {
         try(ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
@@ -55,7 +58,7 @@ public class TicketPdfGenerator {
             document.add(new Paragraph("Total Amount: " + ticket.getTotalAmount() + " MMK"));
 
             // 🔐 Embed QR Code
-            String qrContent =TicketUtils.generateSignedQRPayload(ticket);
+            String qrContent =ticketUtils.generateSignedQRPayload(ticket);
             BufferedImage bufferedQR =QrCodeGeneratorService.generateQRCodeImage(qrContent,200,200);
             ByteArrayOutputStream qrBaos = new ByteArrayOutputStream();
             ImageIO.write(bufferedQR, "png", qrBaos);
@@ -63,7 +66,6 @@ public class TicketPdfGenerator {
             qrImage.scaleToFit(120, 120);
             document.add(new Paragraph("Scan QR for verification:"));
             document.add(qrImage);
-
             document.close();
             return outputStream.toByteArray();
         }catch (Exception e){

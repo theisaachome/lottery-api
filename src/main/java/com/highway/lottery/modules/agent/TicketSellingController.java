@@ -1,5 +1,4 @@
 package com.highway.lottery.modules.agent;
-
 import com.highway.lottery.common.exception.UnauthorizedException;
 import com.highway.lottery.common.util.TicketPdfGenerator;
 import com.highway.lottery.modules.account.repo.AccountRepo;
@@ -43,9 +42,15 @@ public class TicketSellingController {
                 .body(pdfBytes);
     }
      // /tickets/verify
-//    @PostMapping
-    public ResponseEntity<TicketVerificationResult> verifyTicket(@PathVariable("ticketCode")String ticketCode){
-        return null;
+    @GetMapping("/verify")
+    public ResponseEntity<TicketVerificationResult> verifyTicket(
+            @RequestParam("signature") String signature,
+            @RequestParam("payload")String payload){
+        var isMatched = ticketService.verifyTicket(signature,payload);
+        if(!isMatched){
+            return ResponseEntity.status(401).body(new TicketVerificationResult("INVALID","Invalid Ticket"));
+        }
+        return ResponseEntity.ok().body(new TicketVerificationResult("VALID","Success"));
     }
     // get All sold ticket
 //    @GetMapping
