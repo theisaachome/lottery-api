@@ -1,12 +1,14 @@
 package com.highway.lottery.modules.agent;
+import com.highway.lottery.common.dto.APIListResponse;
 import com.highway.lottery.common.exception.UnauthorizedException;
 import com.highway.lottery.common.util.TicketPdfGenerator;
+import com.highway.lottery.config.AppConstants;
 import com.highway.lottery.modules.account.repo.AccountRepo;
-import com.highway.lottery.modules.ticket.dto.SoldTicketResponse;
-import com.highway.lottery.modules.ticket.dto.TicketRequest;
-import com.highway.lottery.modules.ticket.dto.TicketResponse;
-import com.highway.lottery.modules.ticket.dto.TicketVerificationResult;
+import com.highway.lottery.modules.ticket.dto.*;
 import com.highway.lottery.modules.ticket.service.TicketService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -58,6 +60,9 @@ public class TicketSellingController {
 //        var results = ticketService.getTicketsByAgentId(getLoggedUser(authentication.getName()));
 //        return new ResponseEntity<>(results,HttpStatus.OK);
 //    }
+
+
+
     @GetMapping
     public ResponseEntity<List<SoldTicketResponse>> getSoldTicketSales(Authentication authentication){
         var result = ticketService.getSoldTicketByAgentId(getLoggedUser(authentication.getName()));

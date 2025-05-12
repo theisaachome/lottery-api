@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((req)->{
                     req.requestMatchers("/api/v1/auth/**").permitAll();
                     req.requestMatchers("/api/v1/admin/accounts").hasRole("ADMIN");
+                    req.requestMatchers("/api/v1/admin/**").hasRole("ADMIN");
                     req.anyRequest().authenticated();
                 })
                 .exceptionHandling((exception)->

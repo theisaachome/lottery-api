@@ -1,19 +1,26 @@
 package com.highway.lottery.modules.ticket.service;
+import com.highway.lottery.common.dto.APIListResponse;
 import com.highway.lottery.common.exception.APIException;
 import com.highway.lottery.common.exception.ResourceNotFoundException;
 import com.highway.lottery.common.exception.UnauthorizedException;
 import com.highway.lottery.common.util.AppCodeGenerator;
 import com.highway.lottery.common.util.TicketUtils;
 import com.highway.lottery.modules.account.repo.AccountRepo;
+import com.highway.lottery.modules.ticket.dto.TicketFilter;
 import com.highway.lottery.modules.ticket.dto.TicketRequest;
 import com.highway.lottery.modules.ticket.dto.TicketResponse;
 import com.highway.lottery.domain.entity.Commission;
 import com.highway.lottery.modules.ticket.dto.SoldTicketResponse;
+import com.highway.lottery.modules.ticket.entity.Ticket;
 import com.highway.lottery.modules.ticket.entity.TicketNumber;
 import com.highway.lottery.modules.ticket.mapper.TicketMapper;
 import com.highway.lottery.modules.commission.repo.CommissionRepository;
 import com.highway.lottery.modules.ticket.repo.TicketRepository;
+import com.highway.lottery.modules.ticket.repo.TicketSpecifications;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
@@ -97,12 +104,29 @@ public class TicketServiceImpl implements TicketService {
         // Step 4: Check ticket existence
 //        var payload = request.getPayload();
 //        boolean exists = ticketRepository.existsByIdAndTicketCode(payload.getTicketId(), payload.getTicketCode());
-
         try {
             return ticketUtils.verifyTicket(signature,payload);
         }catch (Exception e){
             throw new APIException(HttpStatus.BAD_REQUEST,e.getMessage());
         }
+    }
+
+    @Override
+    public APIListResponse<SoldTicketResponse> search(TicketFilter filter, Pageable pageable) {
+        Specification<Ticket> spec = TicketSpecifications.withFilter(filter);
+       Page<Ticket> ticketPage = ticketRepository.findAll(spec, pageable);
+       List<SoldTicketResponse> soldTicketResponseList = ticketPage.getContent()
+               .stream().map(ticketMapper::toSoldTicketResponse).collect(Collectors.toList());
+        return new APIListResponse<>(
+                true,
+                new APIListResponse.Meta(
+                        ticketPage.getNumber(),
+                        ticketPage.getSize(),
+                        ticketPage.getTotalPages(),
+                        ticketPage.getTotalElements(),
+                        ticketPage.isLast()),
+                soldTicketResponseList,
+                "Subjects retrieved successfully");
     }
 
     @Override
