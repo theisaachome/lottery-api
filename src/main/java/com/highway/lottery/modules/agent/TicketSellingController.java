@@ -29,6 +29,14 @@ public class TicketSellingController {
         var result = ticketService.createTicket(dto,authentication.getName());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    //  GET /api/tickets/{ticketId}
+    //→ View ticket details by ticket id, common operation.
+    @GetMapping("/{ticketId}")
+    public ResponseEntity<APISingleResponse> getTicketDetailsById(@RequestParam("ticketId") Long ticketId) {
+        var result = ticketService.getTicketById(ticketId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
     //  GET /api/tickets/{ticketCode}
     //→ View ticket details by ticket code, ensuring it belongs to the authenticated agent.
     @GetMapping("/{ticketCode}")

@@ -52,9 +52,6 @@ public class TicketServiceImpl implements TicketService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityUser userDetails = (SecurityUser) authentication.getPrincipal();
         var agent = userDetails.getAccount(); // ← reuse, no new DB call
-        // find seller
-//        var agent = accountRepo.findAccountByUsername(user)
-//                .orElseThrow(()->new UnauthorizedException("Authenticated user is not registered in the system."));
 
         // map to entity from dto
         var entity = ticketMapper.toEntity(dto);
@@ -89,6 +86,12 @@ public class TicketServiceImpl implements TicketService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public APISingleResponse<TicketResponse> getTicketById(Long ticketId) {
+        var ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket", "id", ticketId));
+        return new APISingleResponse<>(true,ticketMapper.toResponseDto(ticket),"Subject retrieve successfully.");
+    }
 
     @Override
     public APISingleResponse<TicketResponse> getTicketByTicketCode(String ticketCode) {

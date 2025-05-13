@@ -12,14 +12,22 @@ import java.util.List;
 
 public interface TicketService {
 
+    // Agent operation
     TicketResponse createTicket(TicketRequest dto,String user);
-    List<TicketResponse> getTickets();
-    APIListResponse<SoldTicketResponse> getSoldTicketByAgentId(Long agentId,int pageNo,int pageSize,String sortBy,String sortDir);
-    APISingleResponse<TicketResponse> getTicketByTicketCode(String ticketCode);
-    TicketResponse getTicketDetailsForPdf(String ticketCode);
-
+    // to verify sold ticket
     boolean verifyTicket(String signature,String payload);
     // agent to find sold tickets under his name.
+    APIListResponse<SoldTicketResponse> getSoldTicketByAgentId(Long agentId,int pageNo,int pageSize,String sortBy,String sortDir);
+    // get ticket details by id
+    APISingleResponse<TicketResponse> getTicketById(Long ticketId);
+    // response object different data for pdf content
+    TicketResponse getTicketDetailsForPdf(String ticketCode);
+
+    // Admin Operation
+    // get All ticket sold for time to timme.
+    List<TicketResponse> getTickets();
+
+    APISingleResponse<TicketResponse> getTicketByTicketCode(String ticketCode);
 
     // admin operation without ownership of sold ticket.
     APIListResponse<SoldTicketResponse> search(TicketFilter filter, Pageable pageable);
