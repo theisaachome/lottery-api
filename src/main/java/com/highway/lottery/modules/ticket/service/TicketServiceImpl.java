@@ -3,10 +3,9 @@ import com.highway.lottery.common.dto.APIListResponse;
 import com.highway.lottery.common.dto.APISingleResponse;
 import com.highway.lottery.common.exception.APIException;
 import com.highway.lottery.common.exception.ResourceNotFoundException;
-import com.highway.lottery.common.exception.UnauthorizedException;
 import com.highway.lottery.common.util.AppCodeGenerator;
 import com.highway.lottery.common.util.TicketUtils;
-import com.highway.lottery.modules.account.repo.AccountRepo;
+import com.highway.lottery.config.security.SecurityUser;
 import com.highway.lottery.modules.ticket.dto.TicketFilter;
 import com.highway.lottery.modules.ticket.dto.TicketRequest;
 import com.highway.lottery.modules.ticket.dto.TicketResponse;
@@ -20,9 +19,13 @@ import com.highway.lottery.modules.ticket.repo.TicketRepository;
 import com.highway.lottery.modules.ticket.repo.TicketSpecifications;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
@@ -34,13 +37,11 @@ public class TicketServiceImpl implements TicketService {
 
     @Autowired
     private TicketUtils ticketUtils;
-    private final AccountRepo accountRepo;
     private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
     private final CommissionRepository commissionRepository;
 
-    public TicketServiceImpl(AccountRepo accountRepo, TicketRepository ticketRepository, TicketMapper ticketMapper, CommissionRepository commissionRepository) {
-        this.accountRepo = accountRepo;
+    public TicketServiceImpl(TicketRepository ticketRepository, TicketMapper ticketMapper, CommissionRepository commissionRepository) {
         this.ticketRepository = ticketRepository;
         this.ticketMapper = ticketMapper;
         this.commissionRepository = commissionRepository;
@@ -48,9 +49,12 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public TicketResponse createTicket(TicketRequest dto,String user) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        SecurityUser userDetails = (SecurityUser) authentication.getPrincipal();
+        var agent = userDetails.getAccount(); // ← reuse, no new DB call
         // find seller
-        var agent = accountRepo.findAccountByUsername(user)
-                .orElseThrow(()->new UnauthorizedException("Authenticated user is not registered in the system."));
+//        var agent = accountRepo.findAccountByUsername(user)
+//                .orElseThrow(()->new UnauthorizedException("Authenticated user is not registered in the system."));
 
         // map to entity from dto
         var entity = ticketMapper.toEntity(dto);
@@ -85,24 +89,20 @@ public class TicketServiceImpl implements TicketService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<TicketResponse> getTicketsByAgentId(Long agentId) {
-        return ticketRepository.findAllByAgentId(agentId)
-                .stream()
-                .map(ticketMapper::toResponseDto)
-                .collect(Collectors.toList());
-    }
 
     @Override
     public APISingleResponse<TicketResponse> getTicketByTicketCode(String ticketCode) {
-        var soldTicket = ticketRepository.findTicketByTicketCode(ticketCode)
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        var soldTicket = ticketRepository.findByTicketCodeAndAgentCodeWithDetails(ticketCode,username)
                 .orElseThrow(()->new ResourceNotFoundException("No sold ticket found with ticket-code : " +ticketCode));
         return  new APISingleResponse<>(true,ticketMapper.toResponseDto(soldTicket),"Subject retrvie successfully");
     }
 
     @Override
     public TicketResponse getTicketDetailsForPdf(String ticketCode) {
-        var soldTicket = ticketRepository.findTicketByTicketCode(ticketCode)
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        var soldTicket = ticketRepository.findByTicketCodeAndAgentCodeWithDetails(ticketCode,username)
                 .orElseThrow(()->new ResourceNotFoundException("No sold ticket found with ticket-code : " +ticketCode));
         return  ticketMapper.toResponseDto(soldTicket);
     }
@@ -139,11 +139,29 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<SoldTicketResponse> getSoldTicketByAgentId(Long agentId) {
-        return ticketRepository.findAllByAgentId(agentId)
+    public APIListResponse<SoldTicketResponse> getSoldTicketByAgentId(Long agentId,int pageNo,int pageSize,String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        // create Pageable instance
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+       var soldTicketPage = ticketRepository.findSoldAllTicketsByAgentId(agentId,pageable);
+
+        var soldTicketList= soldTicketPage.getContent()
                 .stream()
                 .map(ticketMapper::toSoldTicketResponse)
                 .collect(Collectors.toList());
+
+           return new APIListResponse<>(
+                true,
+                new APIListResponse.Meta(
+                        soldTicketPage.getNumber(),
+                        soldTicketPage.getSize(),
+                        soldTicketPage.getTotalPages(),
+                        soldTicketPage.getTotalElements(),
+                        soldTicketPage.isLast()),
+                   soldTicketList,
+                "Subjects retrieved successfully");
     }
 
     private BigDecimal getCommission(BigDecimal totalSale,BigDecimal commissionRate) {

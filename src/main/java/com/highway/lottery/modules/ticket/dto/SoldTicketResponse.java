@@ -11,5 +11,4 @@ public record SoldTicketResponse(
         LocalDateTime createdAt,
         List<TicketNumberDto> ticketNumbers,
         BigDecimal totalAmount
-        ) {
-}
+        ) {}

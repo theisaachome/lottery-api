@@ -1,5 +1,8 @@
 package com.highway.lottery.modules.ticket.repo;
 import com.highway.lottery.modules.ticket.entity.Ticket;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -11,10 +14,19 @@ import java.util.UUID;
 
 public interface TicketRepository extends JpaRepository<Ticket, UUID>, JpaSpecificationExecutor<Ticket> {
 
+    @EntityGraph(attributePaths = "ticketNumbers")
     @Query("SELECT t FROM Ticket  t WHERE  t.agent.id=:agentId ")
-    List<Ticket> findAllByAgentId(@Param("agentId") Long agentId);
-    //findAllByAgentCode(String agentCode)
+    Page<Ticket> findSoldAllTicketsByAgentId(@Param("agentId") Long agentId, Pageable pageable);
+
     Optional<Ticket> findTicketByTicketCode(String ticketCode);
+
+    @Query("""
+          SELECT t FROM Ticket t
+          JOIN FETCH t.agent a
+          LEFT JOIN FETCH t.ticketNumbers tn
+          WHERE t.ticketCode = :ticketCode AND a.username = :username
+    """)
+    Optional<Ticket> findByTicketCodeAndAgentCodeWithDetails(@Param("ticketCode")String ticketCode, @Param("username")String username);
 
 
     //Filter by Draw Date or Date Range

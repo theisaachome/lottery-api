@@ -1,12 +1,14 @@
 package com.highway.lottery.modules.agent;
+import com.highway.lottery.common.dto.APIListResponse;
 import com.highway.lottery.common.dto.APISingleResponse;
-import com.highway.lottery.common.exception.UnauthorizedException;
 import com.highway.lottery.common.util.TicketPdfGenerator;
-import com.highway.lottery.modules.account.repo.AccountRepo;
+import com.highway.lottery.config.AppConstants;
+import com.highway.lottery.config.security.SecurityUser;
 import com.highway.lottery.modules.ticket.dto.*;
 import com.highway.lottery.modules.ticket.service.TicketService;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -14,12 +16,10 @@ import java.util.List;
 @RequestMapping("/api/v1/agent/tickets")
 public class TicketSellingController {
     private final TicketService ticketService;
-    private final AccountRepo accountRepo;
     private final TicketPdfGenerator ticketPdfGenerator;
 
-    public TicketSellingController(TicketService ticketService, AccountRepo accountRepo, TicketPdfGenerator ticketPdfGenerator) {
+    public TicketSellingController(TicketService ticketService, TicketPdfGenerator ticketPdfGenerator) {
         this.ticketService = ticketService;
-        this.accountRepo = accountRepo;
         this.ticketPdfGenerator = ticketPdfGenerator;
     }
     // POST /api/tickets
@@ -43,8 +43,16 @@ public class TicketSellingController {
     // GET /api/v1/agent/tickets
     // List all tickets sold by the authenticated agent
     @GetMapping
-    public ResponseEntity<List<SoldTicketResponse>> getSoldTicketSales(Authentication authentication){
-        var result = ticketService.getSoldTicketByAgentId(getLoggedUser(authentication.getName()));
+    public ResponseEntity<APIListResponse<SoldTicketResponse>> getSoldTicketSales(
+            @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int page,
+            @RequestParam(value = "limit", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int limit,
+            @RequestParam(value = "sort", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sort,
+            @RequestParam(value = "direction", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String direction
+    ){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        var authenticatedUser = (SecurityUser) auth.getPrincipal();
+        Long userId = authenticatedUser.getAccount().getId();
+        var result = ticketService.getSoldTicketByAgentId(userId,page,limit,sort,direction);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -92,11 +100,6 @@ public class TicketSellingController {
 //                .contentType(MediaType.APPLICATION_PDF)
 //                .body(pdf);
 //    }
-    private Long getLoggedUser(String username) {
-        var user = accountRepo.findAccountByUsername(username)
-                .orElseThrow(()->new UnauthorizedException("Authenticated user is not registered in the system."));
-        return user.getId();
-    }
 
 
 }

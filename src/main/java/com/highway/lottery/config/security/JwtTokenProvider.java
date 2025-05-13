@@ -1,5 +1,7 @@
 package com.highway.lottery.config.security;
 import com.highway.lottery.common.exception.APIException;
+import com.highway.lottery.common.exception.ResourceNotFoundException;
+import com.highway.lottery.modules.account.repo.AccountRepo;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -10,6 +12,9 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 @Component
 public class JwtTokenProvider {
@@ -21,13 +26,27 @@ public class JwtTokenProvider {
     @Value("${app.jwt-expiration-milliseconds}")
     private long jwtExpiration;
 
+    private final AccountRepo accountRepo;
+
+    public JwtTokenProvider(AccountRepo accountRepo) {
+        this.accountRepo = accountRepo;
+    }
+
     // generate token
     public String generateToken(Authentication authentication) {
-         var username = authentication.getName();
+         var securityUser =(SecurityUser) authentication.getPrincipal();
+         var account = securityUser.getAccount();
+//         var account = accountRepo.findAccountByUsername(username)
+//                 .orElseThrow(()->new ResourceNotFoundException("Bad Credential : NO User  found " + username));
+
          var currentDate = new Date();
          var expirationDate = new Date(currentDate.getTime() + jwtExpiration);
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("accountId", account.getId());
+
          String token = Jwts.builder()
-                 .setSubject(username)
+                 .setClaims(claims)
+                 .setSubject(account.getUsername())
                  .setIssuer(issuer)
                  .setIssuedAt(currentDate)
                  .setExpiration(expirationDate)
@@ -43,6 +62,13 @@ public class JwtTokenProvider {
                 .build()
                 .parseClaimsJws(jwtToken).getBody();
         return claims.getSubject();
+    }
+    public Long getUserId(String token){
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key())
+                .build()
+                .parseClaimsJws(token).getBody();
+        return claims.get("accountId",Long.class);
     }
     // validate jwtToken
     public boolean validateToken(String jwtToken){

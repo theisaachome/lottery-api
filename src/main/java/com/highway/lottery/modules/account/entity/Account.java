@@ -26,7 +26,7 @@ public class Account extends BaseEntity {
     private boolean enabled = true;
     private boolean locked = false;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "account_role",
             joinColumns = @JoinColumn(name = "account_id",referencedColumnName = "id"),

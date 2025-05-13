@@ -14,12 +14,13 @@ public interface TicketService {
 
     TicketResponse createTicket(TicketRequest dto,String user);
     List<TicketResponse> getTickets();
-    List<TicketResponse> getTicketsByAgentId(Long agentId);
-    List<SoldTicketResponse> getSoldTicketByAgentId(Long agentId);
+    APIListResponse<SoldTicketResponse> getSoldTicketByAgentId(Long agentId,int pageNo,int pageSize,String sortBy,String sortDir);
     APISingleResponse<TicketResponse> getTicketByTicketCode(String ticketCode);
     TicketResponse getTicketDetailsForPdf(String ticketCode);
 
     boolean verifyTicket(String signature,String payload);
+    // agent to find sold tickets under his name.
 
+    // admin operation without ownership of sold ticket.
     APIListResponse<SoldTicketResponse> search(TicketFilter filter, Pageable pageable);
 }
