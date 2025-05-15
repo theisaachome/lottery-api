@@ -95,8 +95,8 @@ public class TicketSellingController {
 
 //    @GetMapping(value = "/{ticketCode}/download", produces = MediaType.APPLICATION_PDF_VALUE)
 //    public ResponseEntity<byte[]> downloadTicketPdf(@PathVariable String ticketCode) throws Exception {
-//        String agentCode = "AGENT001"; // Fetch from ticket or logged-in user
-//        byte[] pdf = TicketPdfGenerator.generateTicketPdf(ticketCode, agentCode);
+//        String agentId = "AGENT001"; // Fetch from ticket or logged-in user
+//        byte[] pdf = TicketPdfGenerator.generateTicketPdf(ticketCode, agentId);
 //
 //        HttpHeaders headers = new HttpHeaders();
 //        headers.setContentDisposition(ContentDisposition.builder("attachment")

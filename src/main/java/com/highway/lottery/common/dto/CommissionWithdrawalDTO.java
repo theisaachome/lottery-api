@@ -23,9 +23,6 @@ public class CommissionWithdrawalDTO { private Long id;
 
     private List<CommissionItemDTO> items;     // Breakdown of commissions involved
 
-    private String bankAccountName;            // Name registered for bank account
-    private String bankName;                   // Bank name (optional, if recorded)
-    private String bankAccountNumber;          // Last 4 digits or masked version
 
     private Boolean isWeeklyPayout;            // true if it's a system-generated weekly payout
 }

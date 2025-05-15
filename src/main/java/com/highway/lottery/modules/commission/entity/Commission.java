@@ -1,6 +1,7 @@
-package com.highway.lottery.domain.entity;
+package com.highway.lottery.modules.commission.entity;
 
 import com.highway.lottery.common.dto.BaseEntity;
+import com.highway.lottery.modules.account.entity.Account;
 import com.highway.lottery.modules.ticket.entity.Ticket;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -18,9 +19,9 @@ import java.time.LocalDate;
 public class Commission extends BaseEntity {
 
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "agent_id", nullable = false)
-    private String agent;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "agent_id", nullable = false)
+    private Account agent;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ticket_id", nullable = false)
@@ -33,11 +34,7 @@ public class Commission extends BaseEntity {
     @Column(nullable = false)
     private LocalDate earnedDate;
 
-    @Column(nullable = false)
-    private boolean withdrawn = false;
-
-
-    @UpdateTimestamp
-    @Column(name = "withdraw_date")
-    private LocalDate withdrawDate;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "withdrawal_id")
+     private CommissionWithdrawal commissionWithdrawal; // nullable - null = not withdrawn
 }

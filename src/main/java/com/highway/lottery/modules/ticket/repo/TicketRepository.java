@@ -51,7 +51,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long>, JpaSpecif
 //
 //    Find tickets by agent and draw date:
 //
-//    findAllByAgentCodeAndDrawDate(String agentCode, LocalDate drawDate)
+//    findAllByAgentCodeAndDrawDate(String agentId, LocalDate drawDate)
 //
 //    Find tickets by agent, draw type and date range:
 //

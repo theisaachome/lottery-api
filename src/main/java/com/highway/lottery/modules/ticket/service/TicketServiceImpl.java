@@ -9,7 +9,7 @@ import com.highway.lottery.config.security.SecurityUser;
 import com.highway.lottery.modules.ticket.dto.TicketFilter;
 import com.highway.lottery.modules.ticket.dto.TicketRequest;
 import com.highway.lottery.modules.ticket.dto.TicketResponse;
-import com.highway.lottery.domain.entity.Commission;
+import com.highway.lottery.modules.commission.entity.Commission;
 import com.highway.lottery.modules.ticket.dto.SoldTicketResponse;
 import com.highway.lottery.modules.ticket.entity.Ticket;
 import com.highway.lottery.modules.ticket.entity.TicketNumber;
@@ -69,9 +69,8 @@ public class TicketServiceImpl implements TicketService {
 
 
         var commission = new Commission();
-        commission.setAgent(commission.getCreatedBy());
+        commission.setAgent(userDetails.getAccount());
         commission.setTicket(savedEntity);
-        commission.setWithdrawn(false);
         // 10 % of total sale amount - to be confirmed
         commission.setAmount(getCommission(entity.getTotalAmount(),BigDecimal.valueOf(0.10)));
         commissionRepository.save(commission);

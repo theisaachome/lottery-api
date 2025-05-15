@@ -19,7 +19,7 @@ public class TicketUtils {
     private String baseUrl;
     @Value("${SECRET_KEY}")
     private String SECRET_KEY ;
-    private  final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());;
+    private  final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     public  String generateSignedQRPayload(TicketResponse ticket) throws Exception {
         // 1. Prepare signed QR payload

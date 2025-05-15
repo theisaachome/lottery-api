@@ -16,7 +16,7 @@ public class TicketSpecifications {
                predicates.add(cb.equal(root.get("ticketCode"), filter.ticketCode()));
            }
            if (filter.agentCode() !=null){
-               predicates.add(cb.equal(root.get("agentCode"), filter.agentCode()));
+               predicates.add(cb.equal(root.get("agentId"), filter.agentCode()));
            }
            if(filter.drawType() !=null){
                predicates.add(cb.equal(root.get("drawType"), filter.drawType()));
