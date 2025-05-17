@@ -24,4 +24,5 @@ public class CommissionMapper implements IModelMapper<CommissionRequest, Commiss
                 entity.getCommissionWithdrawal() != null ? entity.getCommissionWithdrawal().getId() : null
         );
     }
+
 }

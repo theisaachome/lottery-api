@@ -12,9 +12,6 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class TicketNumber extends BaseEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ticket_id", nullable = false)
-    private Ticket ticket;
 
     @Column(nullable = false, length = 2)
     private String number;
@@ -27,4 +24,8 @@ public class TicketNumber extends BaseEntity {
         this.amount = amount;
         this.ticket = ticket;
     }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ticket_id", nullable = false)
+    private Ticket ticket;
 }

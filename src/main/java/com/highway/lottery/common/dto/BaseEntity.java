@@ -25,8 +25,15 @@ public abstract  class BaseEntity {
 //    @Column(length = 36, updatable = false, nullable = false)
 //    private UUID id;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "entity_seq")
+//    @SequenceGenerator(name = "entity_seq", sequenceName = "entity_sequence", allocationSize = 50)
+//    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ticket_number_seq")
+    @SequenceGenerator(name = "ticket_number_seq", sequenceName = "ticket_number_seq", allocationSize = 50)
     private Long id;
+
+
 
     @CreatedDate
     @Column(name = "created_at", updatable = false, nullable = false)

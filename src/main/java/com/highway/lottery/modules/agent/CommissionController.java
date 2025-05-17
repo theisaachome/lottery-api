@@ -1,6 +1,7 @@
 package com.highway.lottery.modules.agent;
 
 import com.highway.lottery.common.dto.APIListResponse;
+import com.highway.lottery.common.dto.APISingleResponse;
 import com.highway.lottery.config.AppConstants;
 import com.highway.lottery.config.security.SecurityUser;
 import com.highway.lottery.modules.commission.dto.CommissionResponse;
@@ -11,10 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -48,10 +46,10 @@ public class CommissionController {
      Filter by date, status (withdrawn or not)
      Example: /agent/commissions?startDate=2025-05-01&endDate=2025-05-13&commissionWithdrawal=null
      */
-    @GetMapping("/{agentId}")
-     public ResponseEntity<String> getCommissionsByAgentId(String agentId) {
-
-         return  new ResponseEntity<>("Get Commissions by AgentId", HttpStatus.OK);
+    @GetMapping("/{commissionId}")
+     public ResponseEntity<APISingleResponse> getCommissionsByAgentId(@PathVariable("commissionId") Long commissionId) {
+            var result = commissionService.getCommissionDetailsWithTicket(commissionId);
+         return  new ResponseEntity<>(result, HttpStatus.OK);
      }
 
     /*

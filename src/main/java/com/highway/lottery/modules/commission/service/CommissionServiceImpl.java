@@ -1,8 +1,11 @@
 package com.highway.lottery.modules.commission.service;
 
 import com.highway.lottery.common.dto.APIListResponse;
+import com.highway.lottery.common.dto.APISingleResponse;
 import com.highway.lottery.common.dto.CommissionWithdrawalDTO;
+import com.highway.lottery.common.exception.ResourceNotFoundException;
 import com.highway.lottery.modules.commission.dto.CommissionResponse;
+import com.highway.lottery.modules.commission.dto.CommissionWithTicketDTO;
 import com.highway.lottery.modules.commission.entity.CommissionWithdrawal;
 import com.highway.lottery.modules.commission.mapper.CommissionMapper;
 import com.highway.lottery.modules.commission.repo.CommissionRepository;
@@ -40,7 +43,7 @@ public class CommissionServiceImpl implements CommissionService {
         Sort sortBy = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sort).ascending()
                 : Sort.by(sort).descending();
         Pageable pageable = PageRequest.of(page, limit, sortBy);
-        var commissionsPage = commissionRepository.findByAgentId(agentId,pageable);
+        var commissionsPage = commissionRepository.findAllCommissionAvailableByAgentId(agentId,pageable);
 
 
          return  new APIListResponse<>(
@@ -59,5 +62,14 @@ public class CommissionServiceImpl implements CommissionService {
     @Override
     public CommissionWithdrawalDTO getWithdrawalDetails(Long withdrawalId, String agentId) {
         return null;
+    }
+
+    @Override
+    public APISingleResponse<CommissionWithTicketDTO> getCommissionDetailsWithTicket(Long commissionId) {
+        var result = commissionRepository.findCommissionWithTicketByCommissionId(commissionId)
+                .orElseThrow(()->new ResourceNotFoundException("Commission","ID",commissionId));
+
+        return new APISingleResponse<>(true,
+                result,"Subject retrieved successfully");
     }
 }

@@ -1,5 +1,6 @@
 package com.highway.lottery.modules.commission.repo;
 import com.highway.lottery.modules.commission.dto.CommissionResponse;
+import com.highway.lottery.modules.commission.dto.CommissionWithTicketDTO;
 import com.highway.lottery.modules.commission.entity.Commission;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -7,8 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface CommissionRepository extends JpaRepository<Commission, Integer> {
     // Get all commissions for an agent by agent-code (withdraw status false)
@@ -28,9 +29,9 @@ public interface CommissionRepository extends JpaRepository<Commission, Integer>
           c.commissionWithdrawal.id
         )
         FROM Commission c
-        WHERE c.agent.id = :agentId
+        WHERE c.agent.id = :agentId AND c.commissionWithdrawal is NULL AND c.active IS TRUE
     """)
-    Page<CommissionResponse> findByAgentId(@Param("agentId") Long agentId, Pageable pageable);
+    Page<CommissionResponse> findAllCommissionAvailableByAgentId(@Param("agentId") Long agentId, Pageable pageable);
 
 
     // Get all-time commissions (optional filter by agent)
@@ -44,8 +45,8 @@ public interface CommissionRepository extends JpaRepository<Commission, Integer>
     // Get commission history within a period for a specific agent
     @Query("""
            SELECT c FROM Commission c 
-           WHERE c.agent = :agentId 
-             AND c.earnedDate BETWEEN :from AND :to
+           WHERE c.agent.id = :agentId 
+             AND c.earnedDate BETWEEN :from AND :to AND c.commissionWithdrawal IS NULL
            """)
     List<Commission> findCommissionByAgentAndDateRange(
             @Param("agentId") Long agentId,
@@ -53,5 +54,25 @@ public interface CommissionRepository extends JpaRepository<Commission, Integer>
             @Param("to") LocalDate to
     );
 
+
+    @Query("""
+        SELECT new com.highway.lottery.modules.commission.dto.CommissionWithTicketDTO(
+            c.id,
+            c.amount,
+            c.earnedDate,
+            (c.commissionWithdrawal IS NOT NULL),
+            new com.highway.lottery.modules.commission.dto.TicketSummaryDTO(
+                t.id,
+                t.ticketCode,
+                t.totalAmount,
+                t.drawDate,
+                t.drawType
+            )
+        )
+        FROM Commission c
+        JOIN c.ticket t
+        WHERE c.id = :commissionId
+    """)
+    Optional<CommissionWithTicketDTO> findCommissionWithTicketByCommissionId(@Param("commissionId") Long commissionId);
 
 }

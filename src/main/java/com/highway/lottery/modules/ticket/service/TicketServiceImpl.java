@@ -15,6 +15,7 @@ import com.highway.lottery.modules.ticket.entity.Ticket;
 import com.highway.lottery.modules.ticket.entity.TicketNumber;
 import com.highway.lottery.modules.ticket.mapper.TicketMapper;
 import com.highway.lottery.modules.commission.repo.CommissionRepository;
+import com.highway.lottery.modules.ticket.repo.TicketNumberRepository;
 import com.highway.lottery.modules.ticket.repo.TicketRepository;
 import com.highway.lottery.modules.ticket.repo.TicketSpecifications;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,13 +43,21 @@ public class TicketServiceImpl implements TicketService {
     private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
     private final CommissionRepository commissionRepository;
+    private final TicketNumberRepository ticketNumberRepository;
 
-    public TicketServiceImpl(TicketRepository ticketRepository, TicketMapper ticketMapper, CommissionRepository commissionRepository) {
+    public TicketServiceImpl(TicketRepository ticketRepository, TicketMapper ticketMapper, CommissionRepository commissionRepository, TicketNumberRepository ticketNumberRepository) {
         this.ticketRepository = ticketRepository;
         this.ticketMapper = ticketMapper;
         this.commissionRepository = commissionRepository;
+        this.ticketNumberRepository = ticketNumberRepository;
     }
 
+//    @Transactional
+//    public TicketResponse saveTicketWithNumbers(){
+//
+//    }
+
+    @Transactional
     @Override
     public TicketResponse createTicket(TicketRequest dto,String user) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -55,13 +66,7 @@ public class TicketServiceImpl implements TicketService {
 
         // map to entity from dto
         var entity = ticketMapper.toEntity(dto);
-        var ticketNumbers =
-                dto.getNumbers()
-                        .stream()
-                        .map(data->new TicketNumber(data.getNumber(),data.getAmount(),entity))
-                        .collect(Collectors.toList());
         entity.setAgent(agent);
-        entity.setTicketNumbers(ticketNumbers);
         entity.setAgentCode(agent.getAgentCode());
         entity.setTicketCode(AppCodeGenerator.generateTicketCode(agent.getAgentCode()));
 

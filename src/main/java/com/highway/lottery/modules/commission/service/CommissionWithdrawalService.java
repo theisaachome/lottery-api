@@ -6,5 +6,6 @@ import java.time.LocalDate;
 
 public interface CommissionWithdrawalService {
 
-    CommissionWithdrawal processWithdrawalRequest(Long agentId, LocalDate from, LocalDate to);
+    CommissionWithdrawal processWithdrawalRequest( LocalDate from, LocalDate to);
+
 }

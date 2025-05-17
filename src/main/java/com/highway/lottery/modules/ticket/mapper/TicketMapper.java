@@ -5,6 +5,7 @@ import com.highway.lottery.modules.ticket.dto.TicketRequest;
 import com.highway.lottery.modules.ticket.dto.TicketResponse;
 import com.highway.lottery.modules.ticket.dto.SoldTicketResponse;
 import com.highway.lottery.modules.ticket.entity.Ticket;
+import com.highway.lottery.modules.ticket.entity.TicketNumber;
 import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -26,6 +27,12 @@ public class TicketMapper implements IModelMapper<TicketRequest, TicketResponse,
                 .map(TicketNumberDto::getAmount)
                 .reduce(BigDecimal.ZERO,BigDecimal::add);
         ticket.setTotalAmount(totalAmount);
+        var ticketNumbers =
+                data.getNumbers()
+                        .stream()
+                        .map(t->new TicketNumber(t.getNumber(),t.getAmount(),ticket))
+                        .collect(Collectors.toList());
+        ticket.setTicketNumbers(ticketNumbers);
         return ticket;
     }
 

@@ -3,10 +3,15 @@ import com.highway.lottery.common.dto.BaseEntity;
 import com.highway.lottery.common.enums.WithdrawalStatus;
 import com.highway.lottery.modules.account.entity.Account;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "commission_withdrawals")
 public class CommissionWithdrawal extends BaseEntity {
@@ -19,7 +24,7 @@ public class CommissionWithdrawal extends BaseEntity {
     @Column(nullable = false)
     private BigDecimal totalAmount;
 
-    @Column(nullable = false)
+    @Column(nullable = false) // should be actual withdraw date not request date
     private LocalDate withdrawalDate;
 
 

@@ -5,10 +5,12 @@ import com.highway.lottery.modules.account.entity.Account;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -43,5 +45,6 @@ public class Ticket extends BaseEntity {
     private Account agent;
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TicketNumber> ticketNumbers;
+    @BatchSize(size = 50)
+    private List<TicketNumber> ticketNumbers = new ArrayList<>();
 }

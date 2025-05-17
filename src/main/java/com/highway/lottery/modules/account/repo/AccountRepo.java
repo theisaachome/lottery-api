@@ -23,4 +23,8 @@ public interface AccountRepo extends JpaRepository<Account, Long> {
     List<Account> findAccountByActive();
     boolean  existsAccountByPhone(String phone);
     boolean existsAccountByUsername(String username);
+
+    @Query("SELECT a FROM Account a LEFT JOIN FETCH a.roles WHERE a.username = :username")
+    Optional<Account> findByUsernameWithRoles(@Param("username") String username);
+
 }

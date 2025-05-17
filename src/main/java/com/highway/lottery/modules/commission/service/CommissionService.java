@@ -1,8 +1,10 @@
 package com.highway.lottery.modules.commission.service;
 
 import com.highway.lottery.common.dto.APIListResponse;
+import com.highway.lottery.common.dto.APISingleResponse;
 import com.highway.lottery.common.dto.CommissionWithdrawalDTO;
 import com.highway.lottery.modules.commission.dto.CommissionResponse;
+import com.highway.lottery.modules.commission.dto.CommissionWithTicketDTO;
 import com.highway.lottery.modules.commission.entity.CommissionWithdrawal;
 
 import java.util.List;
@@ -19,4 +21,6 @@ public interface CommissionService {
 
     // 4. Optional: View details of a single withdrawal
     CommissionWithdrawalDTO getWithdrawalDetails(Long withdrawalId, String agentId);
+
+    APISingleResponse<CommissionWithTicketDTO> getCommissionDetailsWithTicket(Long commissionId);
 }
