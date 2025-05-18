@@ -1,13 +1,41 @@
 package com.highway.lottery.modules.admin;
 
+import com.highway.lottery.common.dto.APIListResponse;
+import com.highway.lottery.modules.commission.service.CommissionService;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/v1/admin/commissions")
 public class CommissionOverviewController {
 
+
+    private final CommissionService commissionService;
+
+    public CommissionOverviewController(CommissionService commissionService) {
+        this.commissionService = commissionService;
+    }
     //# View all commissions
+
+    @GetMapping
+    public ResponseEntity<APIListResponse> getCommissionOverview(
+            @RequestParam(required = false) Long agentId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end,
+            @RequestParam(required = false) Boolean withdrawn,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+
+        var result = this.commissionService.searchCommissions(agentId, start, end, withdrawn, page, size);
+        return ResponseEntity.ok(result);
+    }
 
     /*
     🧑‍💼 Admin Role (Superuser):
