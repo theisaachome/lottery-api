@@ -1,5 +1,5 @@
 package com.highway.lottery.repository;
-import com.highway.lottery.domain.entity.CommissionWithdrawal;
+import com.highway.lottery.modules.commission.entity.CommissionWithdrawal;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
